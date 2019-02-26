@@ -1,9 +1,8 @@
 import tensorflow as tf
 import numpy as np
 
-
 # number of neurons in each layer
-input_num_units = 28*28
+input_num_units = 28 * 28
 hidden_num_units = 500
 output_num_units = 10
 
@@ -14,6 +13,8 @@ rng = np.random.RandomState(seed)
 mnist = tf.keras.datasets.mnist
 
 (x_train, y_train), (x_test, y_test) = mnist.load_data()
+
+
 # x_train, x_test = x_train/255.0, x_test/255.0
 
 
@@ -54,24 +55,20 @@ def batch_creator(batch_size, dataset_length, dataset_name):
 x = tf.placeholder(tf.float32, [None, input_num_units])
 y = tf.placeholder(tf.float32, [None, output_num_units])
 
-
 # set remaining variables
 epochs = 5
 batch_size = 128
 learning_rate = 0.01
-
 
 weights = {
     'hidden': tf.Variable(tf.random_normal([input_num_units, hidden_num_units], seed=seed)),
     'output': tf.Variable(tf.random_normal([hidden_num_units, output_num_units], seed=seed))
 }
 
-
 biases = {
     'hidden': tf.Variable(tf.random_normal([hidden_num_units], seed=seed)),
     'output': tf.Variable(tf.random_normal([output_num_units], seed=seed))
 }
-
 
 hidden_layer = tf.add(tf.matmul(x, weights['hidden']), biases['hidden'])
 hidden_layer = tf.nn.relu(hidden_layer)
@@ -93,5 +90,15 @@ with tf.Session() as sess:
         for i in range(total_batch):
             batch_x, batch_y = batch_creator(batch_size, x_train.shape[0], 'train')
             _, c = sess.run([optimizer, cost], feed_dict={x: batch_x, y: batch_y})
-            print("ok")
-        print("ok")
+            avg_cost += c / total_batch
+        print("Epoch:", (epoch + 1), "cost =", "{:.5f}".format(avg_cost))
+    print("\nTraining complete!")
+    # ss = sess.run([output_layer], feed_dict={x: x_train[0].reshape(-1, 784)})
+
+    # find predictions on val set
+    pred_temp = tf.equal(tf.argmax(output_layer, 1), tf.argmax(y, 1))
+    accuracy = tf.reduce_mean(tf.cast(pred_temp, "float"))
+    print("Validation Accuracy:", accuracy.eval({x: x_test.reshape(-1, input_num_units), y: dense_to_one_hot(y_test)}))
+
+    predict = tf.argmax(output_layer, 1)
+    pred = predict.eval({x: x_test.reshape(-1, input_num_units)})
