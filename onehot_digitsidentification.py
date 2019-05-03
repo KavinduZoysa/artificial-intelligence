@@ -15,7 +15,7 @@ mnist = tf.keras.datasets.mnist
 (x_train, y_train), (x_test, y_test) = mnist.load_data()
 
 
-# x_train, x_test = x_train/255.0, x_test/255.0
+x_train, x_test = x_train/255.0, x_test/255.0
 
 
 def dense_to_one_hot(labels_dense, num_classes=10):
@@ -102,3 +102,7 @@ with tf.Session() as sess:
 
     predict = tf.argmax(output_layer, 1)
     pred = predict.eval({x: x_test.reshape(-1, input_num_units)})
+
+    test_index = 20
+    print("Sample output value: ", output_layer.eval({x: x_test.reshape(-1, input_num_units)[[test_index]], y: dense_to_one_hot(y_test)[[test_index]]}))
+    print("Expected value: ", y_test[test_index])
