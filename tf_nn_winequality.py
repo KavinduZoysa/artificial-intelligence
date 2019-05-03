@@ -14,11 +14,19 @@ x = tf.placeholder(dtype=tf.float32, shape=[None, 11])
 y = tf.placeholder(dtype=tf.int32, shape=[None, 1])
 
 # First hidden layer
-# Number of neurons = 15
-layer1 = tf.contrib.layers.fully_connected(x, 15, tf.nn.relu)
+# Number of neurons = 20
+layer1 = tf.contrib.layers.fully_connected(x, 40, tf.nn.relu)
+
+# Second hidden layer
+# Number of neurons = 10
+layer2 = tf.contrib.layers.fully_connected(layer1, 25, tf.nn.relu)
+
+# Third hidden layer
+# Number of neurons = 10
+layer3 = tf.contrib.layers.fully_connected(layer2, 10, tf.nn.relu)
 
 # Output layer
-output = tf.contrib.layers.fully_connected(layer1, 1)
+output = tf.contrib.layers.fully_connected(layer3, 1)
 
 # Define loss
 loss = tf.losses.mean_squared_error(labels=y, predictions=output)
@@ -29,7 +37,7 @@ train_op = tf.train.AdamOptimizer(learning_rate=0.001).minimize(loss)
 with tf.Session() as sess:
     sess.run(tf.global_variables_initializer())
 
-    for i in range(10101):
+    for i in range(10001):
         print('EPOCH', i)
         accuracy_val, loss_val = sess.run([train_op, loss], feed_dict={x: train_data[:, 0:11], y: train_data[:, 11:12]})
         if i % 10 == 0:
