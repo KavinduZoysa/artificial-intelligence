@@ -122,6 +122,23 @@ def propagate(w, b, X, Y):
     return grads, cost
 
 
+def propegate_without_vectors(w, b, X, Y):
+    m = X.shape[1]
+    dw, db = initialize_with_zeros(X.shape[0])
+    L = 0
+    # print("for i in range(0, m)")
+    for i in range(0, m):
+        a = sigmoid(np.dot(w.T, X[:, i]) + b)
+        L = L - (Y[0, i] * np.log(a) + (1 - Y[0, i]) * np.log(1 - a))
+        # print("i : %v", i)
+        for j in range(0, X.shape[0]):
+            dw[j, 0] = dw[j, 0] + X[j, i] * (a - Y[0, i])
+        db = db + (a - Y[0, i])
+    grads = {"dw": dw / m,
+             "db": db / m}
+    return grads, L / m
+
+
 def optimize(w, b, X, Y, num_iterations, learning_rate, print_cost):
     """
     This function optimizes w and b by running a gradient descent algorithm
@@ -151,7 +168,7 @@ def optimize(w, b, X, Y, num_iterations, learning_rate, print_cost):
     for i in range(num_iterations):
 
         # Cost and gradient calculation
-        grads, cost = propagate(w, b, X, Y)
+        grads, cost = propegate_without_vectors(w, b, X, Y)
 
         # Retrieve derivatives from grads
         dw = grads["dw"]
@@ -166,7 +183,7 @@ def optimize(w, b, X, Y, num_iterations, learning_rate, print_cost):
             costs.append(cost)
 
         # Print the cost every 100 training iterations
-        if print_cost and i % 100 == 0:
+        if print_cost and i % 5 == 0:
             print("Cost after iteration %i: %f" % (i, cost))
 
     params = {"w": w,
@@ -255,7 +272,7 @@ def model(X_train, Y_train, X_test, Y_test, num_iterations, learning_rate, print
     return d
 
 
-d = model(train_set_x, train_set_y, test_set_x, test_set_y, num_iterations=2000, learning_rate=0.1, print_cost=True)
+d = model(train_set_x, train_set_y, test_set_x, test_set_y, num_iterations=2000, learning_rate=0.005, print_cost=True)
 
 # Plot learning curve (with costs)
 costs = np.squeeze(d['costs'])
@@ -264,4 +281,3 @@ plt.ylabel('cost')
 plt.xlabel('iterations (per hundreds)')
 plt.title("Learning rate =" + str(d["learning_rate"]))
 plt.show()
-
