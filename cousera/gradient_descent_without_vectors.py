@@ -54,6 +54,7 @@ for j in range(0, 1000):
         z = np.matmul(W.transpose(), X[:, i]) + b
         a = sigmoid(z)
         J = J + (-1) * (Y[i] * np.log(a) + (1 - Y[i]) * np.log(1 - a))
+        # L = L - (Y[0, i] * np.log(a) + (1 - Y[0, i]) * np.log(1 - a))
         dw1 = dw1 + X[0, i] * (a - Y[i])
         dw2 = dw2 + X[1, i] * (a - Y[i])
         dw3 = dw3 + X[2, i] * (a - Y[i])
@@ -68,13 +69,18 @@ for j in range(0, 1000):
     db = db / m
 
     # Update the weights
-    w1 = w1 - 0.0001 * dw1
-    w2 = w2 - 0.0001 * dw2
-    w3 = w3 - 0.0001 * dw3
-    w4 = w4 - 0.0001 * dw4
-    b = b - 0.0001 * db
+    w1 = w1 - 0.01 * dw1
+    w2 = w2 - 0.01 * dw2
+    w3 = w3 - 0.01 * dw3
+    w4 = w4 - 0.01 * dw4
+    b = b - 0.01 * db
 
 # Test the output
 for i in range(0, m):
     z = np.matmul(W.transpose(), X[:, i]) + b
-    print(z - Y[i])
+    a = sigmoid(z)
+    if a > 0.5:
+        a = 1
+    else:
+        a = 0
+    print(a - Y[i])
