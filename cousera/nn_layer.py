@@ -79,7 +79,7 @@ def relu(z):
     return A
 
 
-def neural_network_layer(W, b, A_prev, dA, learning_rate, activation_function):
+def neural_network_layer(W, b, A_prev, dA, learning_rate, activation_function, forward_only=False):
     """
     Implement a common layer including forward propagation and backward propagation.
 
@@ -89,6 +89,7 @@ def neural_network_layer(W, b, A_prev, dA, learning_rate, activation_function):
     :param dA: Derivative the output
     :param learning_rate: Learning rate
     :param activation_function: Activation function used
+    :param forward_only: Calculate only the forward propagation
     :return:
     W -- Weights
     b -- Bias
@@ -98,6 +99,9 @@ def neural_network_layer(W, b, A_prev, dA, learning_rate, activation_function):
 
     # Forward propagation
     A, Z = forward_prop(A_prev, W, b, activation_function)
+    if forward_only:
+        return A, Z
+
     dW, db, dA_prev = backward_prop(Z, dA, A_prev, W, activation_function)
 
     W = W - learning_rate * dW

@@ -1,4 +1,5 @@
 import numpy as np
+import matplotlib.pyplot as plt
 from nn_layer import *
 from dnn_app_utils_v3 import load_data
 
@@ -24,11 +25,6 @@ test_x = test_x_flatten / 255.
 
 # Initialize the dA values for each layer except last layer
 d_activations = initialize_derivatives_of_activations(layers_dims, train_x.shape[1])
-
-learning_rate = 0.0075
-num_iterations = 3000
-print_cost = True
-costs = []
 
 
 def run_nn():
@@ -57,6 +53,31 @@ def run_nn():
     return cost, A4
 
 
+def predict(x, y):
+    A1, Z1 = neural_network_layer(parameters['W1'], parameters['b1'], x, '', '', 'relu', True)
+    A2, Z1 = neural_network_layer(parameters['W2'], parameters['b2'], A1, '', '', 'relu', True)
+    A3, Z1 = neural_network_layer(parameters['W3'], parameters['b3'], A2, '', '', 'relu', True)
+    A4, Z1 = neural_network_layer(parameters['W4'], parameters['b4'], A3, '', '', 'sigmoid', True)
+
+    m = x.shape[1]
+    p = np.zeros((1, m))
+
+    for i in range(0, A4.shape[1]):
+        if A4[0, i] > 0.5:
+            p[0, i] = 1
+        else:
+            p[0, i] = 0
+
+    print("Accuracy: " + str(np.sum((p == y) / m)))
+
+    return p
+
+
+learning_rate = 0.002
+num_iterations = 8400
+print_cost = True
+costs = []
+
 for i in range(0, num_iterations):
     cost, A4 = run_nn()
     # Print the cost every 100 training example
@@ -64,3 +85,13 @@ for i in range(0, num_iterations):
         print("Cost after iteration %i: %f" % (i, cost))
     if print_cost and i % 100 == 0:
         costs.append(cost)
+
+# plot the cost
+plt.plot(np.squeeze(costs))
+plt.ylabel('cost')
+plt.xlabel('iterations (per hundreds)')
+plt.title("Learning rate =" + str(learning_rate))
+plt.show()
+
+pred_train = predict(train_x, train_y)
+pred_test = predict(test_x, test_y)
