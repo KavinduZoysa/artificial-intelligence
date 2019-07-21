@@ -5,14 +5,11 @@ def forward_prop(a, w, b, activation_function):
     """
     Implement the forward propagation.
 
-    :argument:
-    a -- Output of the layer previous layer
-    w -- Weights
-    b -- Bias
-    activation_function -- Activation function
-
-    :return:
-    Output of this layer
+    :param a: Output of the layer previous layer
+    :param w: Weights
+    :param b: Bias
+    :param activation_function: Activation function
+    :return: Output of this layer
     """
 
     z = w.dot(a) + b
@@ -26,12 +23,11 @@ def backward_prop(z, dA, a_prev, w, activation_function):
     """
     Implement the backward propagation.
 
-    :argument:
-    dA -- Derivative of the activated output
-    activation_function -- Activation function
-    z -- Linear output
-    a_prev -- Previous activated output
-    w -- Weights
+    :param z: Linear output
+    :param dA: Derivative of the activated output
+    :param a_prev: Previous activated output
+    :param w: Weights
+    :param activation_function: Activation function
     :return:
     dW -- derivative of weights
     db -- derivative of bias
@@ -62,11 +58,8 @@ def sigmoid(z):
     """
     Implements the sigmoid activation in numpy
 
-    :argument:
-    z -- numpy array of any shape
-
-    :return:
-    A -- output of sigmoid(z), same shape as Z
+    :param z: numpy array of any shape
+    :return: output of sigmoid(z), same shape as Z
     """
 
     A = 1 / (1 + np.exp(-z))
@@ -77,11 +70,8 @@ def relu(z):
     """
     Implement the RELU function.
 
-    :argument:
-    Z -- Output of the linear layer, of any shape
-
-    :return:
-    A -- Post-activation parameter, of the same shape as Z
+    :param z: Output of the linear layer, of any shape
+    :return: Post-activation parameter, of the same shape as Z
     """
 
     A = np.maximum(0, z)
@@ -93,14 +83,12 @@ def neural_network_layer(W, b, A_prev, dA, learning_rate, activation_function):
     """
     Implement a common layer including forward propagation and backward propagation.
 
-    :argument:
-    W -- Weights
-    b -- Bias
-    A_prev -- Output of the previous layer
-    dA -- Derivative the output
-    learning_rate -- Learning rate
-    activation_function -- Activation function used
-
+    :param W: Weights
+    :param b: Bias
+    :param A_prev: Output of the previous layer
+    :param dA: Derivative the output
+    :param learning_rate: Learning rate
+    :param activation_function: Activation function used
     :return:
     W -- Weights
     b -- Bias
@@ -120,11 +108,10 @@ def neural_network_layer(W, b, A_prev, dA, learning_rate, activation_function):
 
 def initialize_parameters_deep(layer_dims):
     """
-    :argument:
-    layer_dims -- python array (list) containing the dimensions of each layer in our network
+    Initialize the weights and bias.
 
-    :return:
-    parameters -- python dictionary containing your parameters "W1", "b1", ..., "WL", "bL":
+    :param layer_dims: python array (list) containing the dimensions of each layer in our network
+    :return: python dictionary containing your parameters "W1", "b1", ..., "WL", "bL":
                     Wl -- weight matrix of shape (layer_dims[l], layer_dims[l-1])
                     bl -- bias vector of shape (layer_dims[l], 1)
     """
@@ -145,6 +132,13 @@ def initialize_parameters_deep(layer_dims):
 
 
 def initialize_derivatives_of_activations(layer_dims, batch_size):
+    """
+    Initialize the derivates of the activations.
+
+    :param layer_dims: Number of layers
+    :param batch_size: Size of the batch
+    :return: Derivatives of the activations
+    """
     np.random.seed(1)
     d_activations = {}
     L = len(layer_dims)
@@ -158,12 +152,9 @@ def compute_cost(AL, Y):
     """
     Implement the cost function defined by equation (7).
 
-    Arguments:
-    AL -- probability vector corresponding to your label predictions, shape (1, number of examples)
-    Y -- true "label" vector (for example: containing 0 if non-cat, 1 if cat), shape (1, number of examples)
-
-    Returns:
-    cost -- cross-entropy cost
+    :param AL: Probability vector corresponding to your label predictions, shape (1, number of examples)
+    :param Y: True "label" vector (for example: containing 0 if non-cat, 1 if cat), shape (1, number of examples)
+    :return: Cross-entropy cost
     """
 
     m = Y.shape[1]
@@ -175,6 +166,3 @@ def compute_cost(AL, Y):
     assert (cost.shape == ())
 
     return cost
-
-
-
