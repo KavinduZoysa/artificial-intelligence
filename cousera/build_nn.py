@@ -1,7 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from nn_layer import *
-from dnn_app_utils_v3 import load_data
 
 layers_dims = [12288, 20, 7, 5, 1]
 np.random.seed(1)
