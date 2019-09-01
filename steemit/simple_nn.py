@@ -59,8 +59,6 @@ def sigmoid(x):
 # Calculate the cost for a single sample
 # Represent the qqn (3)
 def calculate_cost(a, y):
-    # print("a", a)
-    # print("y", y)
     return -y * np.log(a) - (1 - y) * np.log(1 - a)
 
 
@@ -70,13 +68,15 @@ def forward_propagation(w, b, x, n):
     z = b
     for i in range(0, n):
         z = z + w[i] * x[i]
-        # print(str(i) + " : " + str(z))
+    # Calculate the eqn (1)
     return sigmoid(z)
 
 
 def back_propagation(dw, db, a, y, x):
+    # Calculate eqn (6)
     for j in range(0, neurons_of_the_layer):
         dw[j] = dw[j] + (a - y) * x[j]
+    # Calculate eqn (7)
     db = db + (a - train_set_y[0, i])
     return dw, db
 
@@ -90,6 +90,7 @@ def train():
     db = 0
     for i in range(0, m):
         a = forward_propagation(w, b, train_set_x[:, i], neurons_of_the_layer)
+        # Related to eqn (3) and (4)
         c = calculate_cost(a, train_set_y[0, i])
         cost = cost + c
         # # Back propagation without a different method
@@ -103,6 +104,7 @@ def train():
     db = db / m
 
     # Update the weights and biases
+    # calculate eqn (8) and (9)
     w = w - learning_rate * dw
     b = b - learning_rate * db
     return cost
@@ -122,7 +124,6 @@ costs = []
 for i in range(0, iterations):
     cost = train()
     costs.append(cost)
-    print("cost = ", cost)
     print("Cost for iteration " + str(i) + " is " + str(cost))
 
 y_predict_train = predict(train_set_x)
