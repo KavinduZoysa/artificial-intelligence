@@ -74,6 +74,13 @@ def forward_propagation(w, b, x, n):
     return sigmoid(z)
 
 
+def back_propagation(dw, db, a, y, x):
+    for j in range(0, neurons_of_the_layer):
+        dw[j] = dw[j] + (a - y) * x[j]
+    db = db + (a - train_set_y[0, i])
+    return dw, db
+
+
 def train():
     global w, b
     # At the beginning of the each iteration cost should be set as zero
@@ -85,9 +92,11 @@ def train():
         a = forward_propagation(w, b, train_set_x[:, i], neurons_of_the_layer)
         c = calculate_cost(a, train_set_y[0, i])
         cost = cost + c
-        for j in range(0, neurons_of_the_layer):
-            dw[j] = dw[j] + (a - train_set_y[0, i]) * train_set_x[j, i]
-        db = db + (a - train_set_y[0, i])
+        # # Back propagation without a different method
+        # for j in range(0, neurons_of_the_layer):
+        #     dw[j] = dw[j] + (a - train_set_y[0, i]) * train_set_x[j, i]
+        # db = db + (a - train_set_y[0, i])
+        dw, db = back_propagation(dw, db, a, train_set_y[0, i], train_set_x[:, i])
     # This is equivalent to eqn (4)
     cost = cost / m
     dw = dw / m
@@ -99,12 +108,28 @@ def train():
     return cost
 
 
+# Predict the values against the test dataset
+def predict(x):
+    y_predict = np.zeros((1, x.shape[1]))
+    for i in range(0, x.shape[1]):
+        a = forward_propagation(w, b, x[:, i], neurons_of_the_layer)
+        if a > 0.5:
+            y_predict[0, i] = 1
+    return y_predict
+
+
 costs = []
 for i in range(0, iterations):
     cost = train()
     costs.append(cost)
     print("cost = ", cost)
     print("Cost for iteration " + str(i) + " is " + str(cost))
+
+y_predict_train = predict(train_set_x)
+y_predict_test = predict(test_set_x)
+
+print("train accuracy: {} %".format(100 - np.mean(np.abs(y_predict_train - train_set_y)) * 100))
+print("test accuracy: {} %".format(100 - np.mean(np.abs(y_predict_test - test_set_y)) * 100))
 
 plt.plot(np.squeeze(costs))
 plt.ylabel('cost')
