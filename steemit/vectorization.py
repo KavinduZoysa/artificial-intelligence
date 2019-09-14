@@ -40,7 +40,7 @@ neurons_of_the_layer = train_set_x.shape[0]
 # Initialize weights and bias
 # There are 12288 weights and one bias value
 # w = np.random.rand(train_set_x.shape[0])/100.0
-w = np.zeros((neurons_of_the_layer))
+w = np.zeros(neurons_of_the_layer)
 b = np.random.rand(1)
 
 learning_rate = 0.005
@@ -57,21 +57,23 @@ def sigmoid(X):
 
 
 # Calculate the cost for a single sample
-# Represent the qqn (3)
+# Represent the eqn (12)
 def calculate_cost(A, Y):
     return np.sum(-Y * np.log(A) - (1 - Y) * np.log(1 - A)) / m
 
 
-# Calculate the eqn (1)
-# It calculates the z wvalue for a single sample
+# Calculate the eqn (10)
+# It calculates the z value for a single sample
 def forward_propagation(W, B, X):
     Z = np.dot(W, X) + B
-    # Calculate the eqn (1)
+    # Calculate the eqn (11)
     return sigmoid(Z)
 
 
 def back_propagation(A, Y, X):
+    # Calculate the eqn (13)
     dW = np.dot((A - Y), X.T) / m
+    # Calculate the eqn (14)
     dB = np.sum(A - Y) / m
     return dW, dB
 
@@ -81,16 +83,6 @@ def train(W, B):
     cost = calculate_cost(A, train_set_y)
     dW, dB = back_propagation(A, train_set_y, train_set_x)
     return dW, dB, cost
-
-
-# Calculate the eqn (1)
-# It calculates the z wvalue for a single sample
-def forward_propagation_v1(w, b, x, n):
-    z = b
-    for i in range(0, n):
-        z = z + w[i] * x[i]
-    # Calculate the eqn (1)
-    return sigmoid(z)
 
 
 def predict(w, b, X):
@@ -109,7 +101,9 @@ costs = []
 for i in range(0, iterations):
     dw, db, c = train(w, b)
     costs.append(c)
+    # Calculate the eqn (15)
     w = w - learning_rate * dw
+    # Calculate the eqn (16)
     b = b - learning_rate * db
 
 y_predict_train = predict(w, b, train_set_x)
